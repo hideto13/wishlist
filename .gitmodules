@@ -1,0 +1,6 @@
+[submodule "app"]
+	path = app
+	url = git@github.com:hideto13/wishlist-app.git
+[submodule "api"]
+	path = api
+	url = git@github.com:hideto13/wishlist-api.git
