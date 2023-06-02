@@ -1,0 +1,50 @@
+version: '3'
+services:
+  ingress:
+    build: ./ingress/
+    ports:
+      - '443:443'
+    image: ingress
+    volumes:
+      - images:/images/
+      - static:/static/
+      - /opt/ssl:/ssl
+    restart: on-failure
+    depends_on:
+      - app
+      - api
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: app
+    restart: always
+
+  api_db:
+    image: mongo:4.4.18
+    ports:
+      - "27017:27017"
+    volumes:
+      - db:/data/db
+    restart: always
+
+  api:
+    image: api
+    build: ./api
+    volumes:
+      - static:/static/
+      - media:/app/media/
+    environment:
+      - MONGO_DATA_BASE=mongodb://api_db:27017/wishesdb
+    ports:
+      - '3000:3000'
+    restart: on-failure
+    depends_on:
+      - api_db
+
+volumes:
+  images:
+  static:
+  media:
+  db:
